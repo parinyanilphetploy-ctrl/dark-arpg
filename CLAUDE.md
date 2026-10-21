@@ -10,6 +10,13 @@ Stack: TypeScript + Vite + Three.js. Static site, no backend.
 - `npm run typecheck`
 - `node scripts/make-icons.mjs`: regenerate the app icons in `public/icons/`
 
+## Deploy
+- Repo: https://github.com/parinyanilphetploy-ctrl/dark-arpg (public)
+- Live: https://parinyanilphetploy-ctrl.github.io/dark-arpg/ — every push to `main` builds and
+  deploys via `.github/workflows/deploy.yml` (GitHub Pages, HTTPS, so the PWA installs on phones).
+- Commit with the GitHub noreply email (set in this repo's git config), not a personal address.
+- `character sheet/` is local reference art and is git-ignored; keep it out of the public repo.
+
 ## Layout
 - `src/core/`: engine-level pieces (fixed-timestep `Loop`, `Renderer`, unified `Input`, cached `Assets`)
 - `src/game/`: gameplay. `Game` builds the level, wires input, spawns waves and resolves combat;
