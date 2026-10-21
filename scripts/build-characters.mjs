@@ -41,6 +41,18 @@ const CLASSES = {
 const HEAD_SCALE = 0.62;
 const LEG_SCALE = 1.7;
 const ARM_SCALE = 1.25;
+/**
+ * Slimmer build: each body part's bind-pose mesh is squeezed around its own centre
+ * (axes in mesh space; arms are in T-pose along x). Bones stay put, so skinning and
+ * the clips are untouched.
+ */
+const SLIM = [
+  [/_Body$/, [0.72, 1, 0.8]],
+  [/_Arm(Left|Right)$/, [1, 0.78, 0.78]],
+  [/_Leg(Left|Right)$/, [0.8, 1, 0.8]],
+];
+/** Capes are rigid props on the chest; narrow them to match the slimmer torso. */
+const CAPE_SCALE = [0.75, 1, 0.8];
 
 const srcDir = process.argv[2];
 if (!srcDir) {
@@ -86,6 +98,12 @@ for (const [id, cfg] of Object.entries(CLASSES)) {
   liftBone(root, "hips", legLength * (LEG_SCALE - 1));
   scaleBone(root, "upperarm.l", [1, ARM_SCALE, 1]);
   scaleBone(root, "upperarm.r", [1, ARM_SCALE, 1]);
+  for (const node of root.listNodes()) {
+    const name = node.getName();
+    const slim = SLIM.find(([re]) => re.test(name));
+    if (slim) squeezeMesh(node, slim[1]);
+    if (/_Cape$/.test(name)) node.setScale(node.getScale().map((v, i) => v * CAPE_SCALE[i]));
+  }
 
   for (const tex of root.listTextures()) {
     if (tex.getMimeType() === "image/png") tex.setImage(gothicGrade(tex.getImage()));
@@ -108,6 +126,35 @@ function scaleBone(root, name, factor) {
 /** Raise a bone by `dy` in the rest pose and in every clip. */
 function liftBone(root, name, dy) {
   editBone(root, name, "translation", (v, axis) => (axis === 1 ? v + dy : v));
+}
+
+/** Scale a node's mesh vertices by `k` per axis around the mesh's bounding-box centre. */
+function squeezeMesh(node, k) {
+  for (const prim of node.getMesh().listPrimitives()) {
+    // Accessors can be shared, so edit copies
+    const pos = prim.getAttribute("POSITION").clone();
+    const min = pos.getMin([]);
+    const max = pos.getMax([]);
+    const c = min.map((v, i) => (v + max[i]) / 2);
+    pos.setArray(pos.getArray().map((v, i) => c[i % 3] + (v - c[i % 3]) * k[i % 3]));
+    prim.setAttribute("POSITION", pos);
+
+    // Normals transform by the inverse scale
+    const nrm = prim.getAttribute("NORMAL")?.clone();
+    if (!nrm) continue;
+    const a = nrm.getArray();
+    for (let i = 0; i < a.length; i += 3) {
+      const x = a[i] / k[0];
+      const y = a[i + 1] / k[1];
+      const z = a[i + 2] / k[2];
+      const len = Math.hypot(x, y, z) || 1;
+      a[i] = x / len;
+      a[i + 1] = y / len;
+      a[i + 2] = z / len;
+    }
+    nrm.setArray(a);
+    prim.setAttribute("NORMAL", nrm);
+  }
 }
 
 function boneNode(root, name) {
