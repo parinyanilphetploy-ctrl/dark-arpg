@@ -15,7 +15,12 @@
     "three": "^0.170.0"
   },
   "devDependencies": {
+    "@gltf-transform/core": "^4.5.1",
+    "@gltf-transform/extensions": "^4.5.1",
+    "@gltf-transform/functions": "^4.5.1",
     "@types/three": "^0.170.0",
+    "meshoptimizer": "^0.22.0",
+    "pngjs": "^7.0.0",
     "typescript": "^5.7.2",
     "vite": "^6.0.7",
     "vite-plugin-pwa": "^2.0.0"

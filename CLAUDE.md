@@ -9,6 +9,9 @@ Stack: TypeScript + Vite + Three.js. Static site, no backend.
 - `npm run preview`: serve `dist/` on port 4173 — the only way to test the service worker / offline
 - `npm run typecheck`
 - `node scripts/make-icons.mjs`: regenerate the app icons in `public/icons/`
+- `node scripts/build-characters.mjs <folder>`: rebuild the 4 class models from the KayKit
+  Adventurers GLBs in `<folder>` (weapon per class, clips renamed idle/run/attack/death,
+  gothic recolour of the atlas, meshopt)
 
 ## Deploy
 - Repo: https://github.com/parinyanilphetploy-ctrl/dark-arpg (public)
@@ -52,12 +55,14 @@ Stack: TypeScript + Vite + Three.js. Static site, no backend.
 ## Art direction
 Reference sheets: `character sheet/` (Warrior with greatsword, Dual Blade, Mage, Archer).
 Gothic dark fantasy: near-black base, blood red cloth and red magic glow, worn dark steel with
-silver edges, ember-orange fire light. Use these colours for UI, VFX and lighting. The robot
-model is a placeholder until 3D characters are made from these sheets.
+silver edges, ember-orange fire light. Use these colours for UI, VFX and lighting. The classes
+currently use recoloured KayKit models (stylised, CC0) until 3D characters are made from these
+sheets (`docs/character-pipeline.md`); monsters still use the placeholder robot.
 
 ## Mobile / PWA
-- `game/models.ts` bakes untextured multi-part models into one SkinnedMesh with vertex colours
-  (robot: 19 draw calls → 1). Textured models are left as they are, so ship them as one mesh.
+- `game/models.ts` bakes multi-part models into one SkinnedMesh with vertex colours
+  (robot: 19 draw calls → 1). Parts sharing one texture atlas merge too (KayKit: 8 → 1);
+  models with several textures are left as they are, so ship them as one mesh.
 - `core/Renderer.ts` `DynamicResolution` lowers the pixel ratio when frames are slow and backs off
   if that doesn't help (frame-rate-capped devices such as iOS Low Power Mode).
 - The loop and audio stop while the page is hidden.

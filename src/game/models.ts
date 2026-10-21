@@ -31,6 +31,7 @@ export async function instantiateCharacter(
   if (template) {
     const material = new THREE.MeshStandardMaterial({
       vertexColors: true,
+      map: template.map,
       color: tint ?? 0xffffff,
       roughness: template.roughness,
       metalness: template.metalness,
@@ -73,6 +74,8 @@ interface MergedTemplate {
   geometry: THREE.BufferGeometry;
   boneNames: string[];
   boneInverses: THREE.Matrix4[];
+  /** The one texture every part shares (texture-atlas models), or null for flat colours. */
+  map: THREE.Texture | null;
   roughness: number;
   metalness: number;
   /** Clips without tracks for the meshes that were merged away (e.g. face morphs). */
@@ -85,7 +88,8 @@ const templateCache = new WeakMap<THREE.Object3D, MergedTemplate | null>();
  * Models made of many parts (the placeholder robot is 19 meshes / 3 materials, so
  * 19 draw calls) are baked into a single SkinnedMesh: rigid parts are skinned 100%
  * to their parent bone, and each part's flat material colour becomes a vertex colour.
- * Returns null for textured models, which can't share one plain material.
+ * Models whose parts all sample one texture atlas (KayKit) merge too, keeping their UVs.
+ * Returns null for models with several textures, which can't share one material.
  */
 function mergedTemplate(source: THREE.Object3D, clips: THREE.AnimationClip[]): MergedTemplate | null {
   if (templateCache.has(source)) return templateCache.get(source)!;
@@ -105,15 +109,25 @@ function buildTemplate(source: THREE.Object3D, clips: THREE.AnimationClip[]): Me
     if ((o as THREE.Bone).isBone) bones.push(o as THREE.Bone);
   });
   const materialsOf = (m: THREE.Mesh) => (Array.isArray(m.material) ? m.material : [m.material]) as THREE.MeshStandardMaterial[];
-  const textured = meshes.some((m) => materialsOf(m).some((mat) => mat.map));
+  const maps = new Set(meshes.flatMap((m) => materialsOf(m).map((mat) => mat.map?.source ?? null)));
+  const map = materialsOf(meshes[0])[0]?.map ?? null;
+  const textured = map !== null;
   const uniqueNames = new Set(bones.map((b) => b.name)).size === bones.length;
-  if (!meshes.length || !bones.length || textured || !uniqueNames || meshes.some((m) => materialsOf(m).length > 1)) {
+  if (
+    !meshes.length ||
+    !bones.length ||
+    !uniqueNames ||
+    maps.size > 1 ||
+    meshes.some((m) => materialsOf(m).length > 1) ||
+    (textured && meshes.some((m) => !m.geometry.getAttribute("uv")))
+  ) {
     return null;
   }
 
   const boneIndex = new Map(bones.map((b, i) => [b, i]));
   const pos: number[] = [];
   const nrm: number[] = [];
+  const uv: number[] = [];
   const col: number[] = [];
   const skinIdx: number[] = [];
   const skinWt: number[] = [];
@@ -126,6 +140,7 @@ function buildTemplate(source: THREE.Object3D, clips: THREE.AnimationClip[]): Me
     const geo = mesh.geometry;
     const p = geo.getAttribute("position");
     const normals = geo.getAttribute("normal");
+    const uvs = textured ? geo.getAttribute("uv") : null;
     const color = materialsOf(mesh)[0].color;
     const skinned = (mesh as THREE.SkinnedMesh).isSkinnedMesh ? (mesh as THREE.SkinnedMesh) : null;
     normalMatrix.getNormalMatrix(mesh.matrixWorld);
@@ -149,6 +164,7 @@ function buildTemplate(source: THREE.Object3D, clips: THREE.AnimationClip[]): Me
       if (normals) n.fromBufferAttribute(normals, i).applyMatrix3(normalMatrix).normalize();
       else n.set(0, 1, 0);
       nrm.push(n.x, n.y, n.z);
+      if (uvs) uv.push(uvs.getX(i), uvs.getY(i));
       col.push(color.r, color.g, color.b);
       if (skinned && si && sw) {
         for (let k = 0; k < 4; k++) {
@@ -168,6 +184,7 @@ function buildTemplate(source: THREE.Object3D, clips: THREE.AnimationClip[]): Me
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
   geometry.setAttribute("normal", new THREE.Float32BufferAttribute(nrm, 3));
+  if (textured) geometry.setAttribute("uv", new THREE.Float32BufferAttribute(uv, 2));
   geometry.setAttribute("color", new THREE.Float32BufferAttribute(col, 3));
   geometry.setAttribute("skinIndex", new THREE.Uint16BufferAttribute(skinIdx, 4));
   geometry.setAttribute("skinWeight", new THREE.Float32BufferAttribute(skinWt, 4));
@@ -180,6 +197,7 @@ function buildTemplate(source: THREE.Object3D, clips: THREE.AnimationClip[]): Me
     boneNames: bones.map((b) => b.name),
     // Bind pose = the work clone's current pose, with the model root at the origin
     boneInverses: bones.map((b) => b.matrixWorld.clone().invert()),
+    map,
     roughness: first.roughness ?? 0.6,
     metalness: first.metalness ?? 0,
     animations: clips.map(

@@ -2,7 +2,9 @@
 
 How to turn the sheets in `character sheet/` into GLB models the game loads.
 The code side is done: drop a file at the path in `src/data/classes.json` and that
-class uses it. Until then each class falls back to the tinted placeholder robot.
+class uses it. The files there now are recoloured KayKit stand-ins built by
+`scripts/build-characters.mjs`; replacing one only means overwriting its GLB (and its
+`clips` names). A missing file falls back to the tinted placeholder robot.
 
 ## Targets (mobile first)
 

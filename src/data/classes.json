@@ -5,7 +5,7 @@
     "model": "models/characters/warrior.glb",
     "height": 1.85,
     "tint": "#a33a32",
-    "clips": { "idle": "Idle", "run": "Running", "attack": "Punch", "death": "Death" },
+    "clips": { "idle": "idle", "run": "run", "attack": "attack", "death": "death" },
     "attack": { "kind": "melee", "range": 2.2, "arc": 170, "animSpeed": 1.3, "hitAt": 0.45 },
     "baseHp": 120,
     "damageMult": 1.25,
@@ -17,7 +17,7 @@
     "model": "models/characters/dualblade.glb",
     "height": 1.8,
     "tint": "#8c3a44",
-    "clips": { "idle": "Idle", "run": "Running", "attack": "Punch", "death": "Death" },
+    "clips": { "idle": "idle", "run": "run", "attack": "attack", "death": "death" },
     "attack": { "kind": "melee", "range": 1.7, "arc": 110, "animSpeed": 2.2, "hitAt": 0.4 },
     "baseHp": 95,
     "damageMult": 0.8,
@@ -29,7 +29,7 @@
     "model": "models/characters/mage.glb",
     "height": 1.75,
     "tint": "#c0203a",
-    "clips": { "idle": "Idle", "run": "Running", "attack": "Punch", "death": "Death" },
+    "clips": { "idle": "idle", "run": "run", "attack": "attack", "death": "death" },
     "attack": {
       "kind": "projectile", "range": 11, "animSpeed": 1.4, "hitAt": 0.4,
       "projectile": { "speed": 14, "radius": 0.35, "color": "#ff3040", "size": 0.3, "explode": 2.2 }
@@ -44,7 +44,7 @@
     "model": "models/characters/archer.glb",
     "height": 1.75,
     "tint": "#7a5a3a",
-    "clips": { "idle": "Idle", "run": "Running", "attack": "Punch", "death": "Death" },
+    "clips": { "idle": "idle", "run": "run", "attack": "attack", "death": "death" },
     "attack": {
       "kind": "projectile", "range": 14, "animSpeed": 1.8, "hitAt": 0.35,
       "projectile": { "speed": 24, "radius": 0.3, "color": "#ffb060", "size": 0.12, "pierce": 2 }
