@@ -108,6 +108,9 @@ function buildTemplate(source: THREE.Object3D, clips: THREE.AnimationClip[]): Me
     if ((o as THREE.Mesh).isMesh) meshes.push(o as THREE.Mesh);
     if ((o as THREE.Bone).isBone) bones.push(o as THREE.Bone);
   });
+  // applyBoneTransform reads the skeleton's bone matrices, which a fresh clone hasn't
+  // computed yet; without this, a rest pose that differs from the bind pose is lost
+  for (const m of meshes) (m as THREE.SkinnedMesh).skeleton?.update();
   const materialsOf = (m: THREE.Mesh) => (Array.isArray(m.material) ? m.material : [m.material]) as THREE.MeshStandardMaterial[];
   const maps = new Set(meshes.flatMap((m) => materialsOf(m).map((mat) => mat.map?.source ?? null)));
   const map = materialsOf(meshes[0])[0]?.map ?? null;

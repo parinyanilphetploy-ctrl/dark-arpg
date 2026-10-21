@@ -37,6 +37,11 @@ const CLASSES = {
   },
 };
 
+/** KayKit heads are chibi-sized; shrink them towards adult proportions. */
+const HEAD_SCALE = 0.62;
+const LEG_SCALE = 1.7;
+const ARM_SCALE = 1.25;
+
 const srcDir = process.argv[2];
 if (!srcDir) {
   console.error("usage: node scripts/build-characters.mjs <kaykit gltf folder>");
@@ -73,6 +78,15 @@ for (const [id, cfg] of Object.entries(CLASSES)) {
   const missing = [...wanted.keys()].filter((c) => !root.listAnimations().some((a) => a.getName() === wanted.get(c)));
   if (missing.length) throw new Error(`${cfg.source}: missing clips ${missing.join(", ")}`);
 
+  scaleBone(root, "head", [HEAD_SCALE, HEAD_SCALE, HEAD_SCALE]);
+  // Longer legs: stretch both thighs along the bone (shins inherit it) and lift the hips to match
+  const legLength = ["lowerleg.l", "foot.l"].reduce((s, n) => s + boneNode(root, n).getTranslation()[1], 0);
+  scaleBone(root, "upperleg.l", [1, LEG_SCALE, 1]);
+  scaleBone(root, "upperleg.r", [1, LEG_SCALE, 1]);
+  liftBone(root, "hips", legLength * (LEG_SCALE - 1));
+  scaleBone(root, "upperarm.l", [1, ARM_SCALE, 1]);
+  scaleBone(root, "upperarm.r", [1, ARM_SCALE, 1]);
+
   for (const tex of root.listTextures()) {
     if (tex.getMimeType() === "image/png") tex.setImage(gothicGrade(tex.getImage()));
   }
@@ -81,6 +95,44 @@ for (const [id, cfg] of Object.entries(CLASSES)) {
   const out = join(outDir, `${id}.glb`);
   await io.write(out, doc);
   console.log(`${out}  ${(statSync(out).size / 1024).toFixed(0)} KB`);
+}
+
+/**
+ * Scale a bone (and everything skinned to it) in the rest pose and in every clip.
+ * The clips key scale on every bone, so the rest pose alone would be overwritten.
+ */
+function scaleBone(root, name, factor) {
+  editBone(root, name, "scale", (v, axis) => v * factor[axis]);
+}
+
+/** Raise a bone by `dy` in the rest pose and in every clip. */
+function liftBone(root, name, dy) {
+  editBone(root, name, "translation", (v, axis) => (axis === 1 ? v + dy : v));
+}
+
+function boneNode(root, name) {
+  const bone = root.listNodes().find((n) => n.getName() === name);
+  if (!bone) throw new Error(`bone ${name} not found`);
+  return bone;
+}
+
+/** Apply `f(value, axis)` to a bone's vec3 `path` in the rest pose and every clip keyframe. */
+function editBone(root, name, path, f) {
+  const bone = boneNode(root, name);
+  const rest = path === "scale" ? bone.getScale() : bone.getTranslation();
+  const edited = rest.map((v, axis) => f(v, axis));
+  if (path === "scale") bone.setScale(edited);
+  else bone.setTranslation(edited);
+  for (const anim of root.listAnimations()) {
+    for (const ch of anim.listChannels()) {
+      if (ch.getTargetNode() !== bone || ch.getTargetPath() !== path) continue;
+      const sampler = ch.getSampler();
+      // Outputs can be shared between channels, so edit a copy
+      const out = sampler.getOutput().clone();
+      out.setArray(out.getArray().map((v, i) => f(v, i % 3)));
+      sampler.setOutput(out);
+    }
+  }
 }
 
 /**
