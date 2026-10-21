@@ -3,3 +3,5 @@ dist
 *.log
 .DS_Store
 .claude/settings.local.json
+# Reference concept art stays local (not published with the repo)
+character sheet/
