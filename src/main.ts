@@ -1,8 +1,9 @@
 import Stats from "three/addons/libs/stats.module.js";
+import { registerSW } from "virtual:pwa-register";
 import { AudioEngine } from "./core/Audio";
 import { Input } from "./core/Input";
 import { Loop } from "./core/Loop";
-import { bindResize, createRenderer } from "./core/Renderer";
+import { bindResize, createRenderer, DynamicResolution } from "./core/Renderer";
 import { Game } from "./game/Game";
 import { newSave } from "./save/schema";
 import { loadGame, requestPersistentStorage, saveGame, startAutosave, UnreadableSaveError } from "./save/storage";
@@ -44,8 +45,11 @@ async function boot() {
   // Inspect from the browser console during development
   if (import.meta.env.DEV) Object.assign(window, { game });
 
+  const dynRes = new DynamicResolution(renderer, quality.maxPixelRatio);
+  // Debug overlay (FPS meter + text) in development, or in a build with ?debug
+  const showDebug = import.meta.env.DEV || new URLSearchParams(location.search).has("debug");
   const stats = new Stats();
-  if (settings.showFps) {
+  if (showDebug && settings.showFps) {
     // Top-right under the debug text, clear of the HP bar
     Object.assign(stats.dom.style, { left: "auto", right: "8px", top: "84px", zIndex: "1" });
     document.body.appendChild(stats.dom);
@@ -57,6 +61,8 @@ async function boot() {
     (alpha, frameDt) => {
       game.render(alpha, frameDt);
       renderer.render(game.scene, game.camera);
+      dynRes.update(frameDt);
+      if (!showDebug) return;
       stats.update();
 
       debugTimer += frameDt;
@@ -65,7 +71,7 @@ async function boot() {
         const p = game.player.pos;
         debug.textContent = [
           `quality: ${settings.quality}${isTouchDevice ? " (touch)" : ""}`,
-          `draw calls: ${renderer.info.render.calls}`,
+          `draw calls: ${renderer.info.render.calls}  res: ${Math.round(dynRes.scale * 100)}% (${dynRes.pixelRatio.toFixed(2)}x)`,
           `pos: ${p.x.toFixed(1)}, ${p.z.toFixed(1)}  ${game.player.animState}`,
           `monsters: ${game.monsters.filter((m) => m.alive).length}  drawn: ${game.monsters.filter((m) => m.root.visible).length}`,
         ].join("\n");
@@ -74,8 +80,22 @@ async function boot() {
   );
   loop.start();
 
+  // Backgrounded (app switched, screen locked): stop rendering and audio to save battery
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      loop.stop();
+      audio.suspend();
+    } else {
+      loop.start();
+      audio.resume();
+    }
+  });
+
   document.getElementById("loading")!.classList.add("hidden");
 }
+
+// Offline support + install to home screen (production builds only; the dev server has no service worker)
+if (import.meta.env.PROD) registerSW({ immediate: true });
 
 boot().catch((err) => {
   console.error(err);

@@ -17,6 +17,7 @@
   "devDependencies": {
     "@types/three": "^0.170.0",
     "typescript": "^5.7.2",
-    "vite": "^6.0.7"
+    "vite": "^6.0.7",
+    "vite-plugin-pwa": "^2.0.0"
   }
 }

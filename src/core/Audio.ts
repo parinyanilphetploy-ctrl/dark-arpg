@@ -52,6 +52,15 @@ export class AudioEngine {
     if (this.ctx.state === "suspended") void this.ctx.resume();
   }
 
+  /** Stop all sound while the app is in the background (saves battery on phones). */
+  suspend() {
+    if (this.ctx?.state === "running") void this.ctx.suspend();
+  }
+
+  resume() {
+    if (this.ctx?.state === "suspended") void this.ctx.resume();
+  }
+
   /** Lets the app persist the mute choice. */
   onMuteChange: (muted: boolean) => void = () => {};
 

@@ -5,8 +5,10 @@ Stack: TypeScript + Vite + Three.js. Static site, no backend.
 
 ## Commands
 - `npm run dev`: dev server, exposed on the LAN (open the printed Network URL on a phone)
-- `npm run build`: type-check + production build into `dist/`
+- `npm run build`: type-check + production build into `dist/` (includes the PWA service worker)
+- `npm run preview`: serve `dist/` on port 4173 — the only way to test the service worker / offline
 - `npm run typecheck`
+- `node scripts/make-icons.mjs`: regenerate the app icons in `public/icons/`
 
 ## Layout
 - `src/core/`: engine-level pieces (fixed-timestep `Loop`, `Renderer`, unified `Input`, cached `Assets`)
@@ -45,6 +47,16 @@ Reference sheets: `character sheet/` (Warrior with greatsword, Dual Blade, Mage,
 Gothic dark fantasy: near-black base, blood red cloth and red magic glow, worn dark steel with
 silver edges, ember-orange fire light. Use these colours for UI, VFX and lighting. The robot
 model is a placeholder until 3D characters are made from these sheets.
+
+## Mobile / PWA
+- `game/models.ts` bakes untextured multi-part models into one SkinnedMesh with vertex colours
+  (robot: 19 draw calls → 1). Textured models are left as they are, so ship them as one mesh.
+- `core/Renderer.ts` `DynamicResolution` lowers the pixel ratio when frames are slow and backs off
+  if that doesn't help (frame-rate-capped devices such as iOS Low Power Mode).
+- The loop and audio stop while the page is hidden.
+- PWA via `vite-plugin-pwa` (config in `vite.config.ts`): precaches the whole game for offline
+  play, auto-updates on the next launch. Only active in production builds.
+- The debug overlay and FPS meter show in dev, or in a build opened with `?debug`.
 
 ## Rules
 - Gameplay logic runs in `update(dt)` at a fixed 60 Hz; `render()` only interpolates and draws.
