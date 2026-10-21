@@ -1,0 +1,28 @@
+{
+  "rusty_sword": { "name": "Rusty Sword", "type": "mainhand", "icon": "🗡️", "levelReq": 1, "baseDamage": [9, 14] },
+  "iron_sword": { "name": "Iron Sword", "type": "mainhand", "icon": "🗡️", "levelReq": 3, "baseDamage": [12, 19] },
+  "spiked_mace": { "name": "Spiked Mace", "type": "mainhand", "icon": "🔨", "levelReq": 5, "baseDamage": [15, 23] },
+  "war_axe": { "name": "War Axe", "type": "mainhand", "icon": "🪓", "levelReq": 7, "baseDamage": [19, 30] },
+  "cleaver": { "name": "Cleaver", "type": "mainhand", "icon": "🪓", "levelReq": 10, "baseDamage": [24, 38] },
+
+  "buckler": { "name": "Buckler", "type": "offhand", "icon": "🛡️", "levelReq": 1, "armor": 6 },
+  "kite_shield": { "name": "Kite Shield", "type": "offhand", "icon": "🛡️", "levelReq": 6, "armor": 15 },
+
+  "leather_cap": { "name": "Leather Cap", "type": "head", "icon": "⛑️", "levelReq": 1, "armor": 4 },
+  "iron_helm": { "name": "Iron Helm", "type": "head", "icon": "⛑️", "levelReq": 5, "armor": 9 },
+
+  "padded_tunic": { "name": "Padded Tunic", "type": "chest", "icon": "👕", "levelReq": 1, "armor": 8 },
+  "chainmail": { "name": "Chainmail", "type": "chest", "icon": "🦺", "levelReq": 5, "armor": 18 },
+
+  "leather_gloves": { "name": "Leather Gloves", "type": "hands", "icon": "🧤", "levelReq": 1, "armor": 3 },
+  "gauntlets": { "name": "Gauntlets", "type": "hands", "icon": "🧤", "levelReq": 5, "armor": 7 },
+
+  "leather_pants": { "name": "Leather Pants", "type": "legs", "icon": "👖", "levelReq": 1, "armor": 5 },
+  "plate_greaves": { "name": "Plate Greaves", "type": "legs", "icon": "👖", "levelReq": 6, "armor": 12 },
+
+  "worn_boots": { "name": "Worn Boots", "type": "feet", "icon": "👢", "levelReq": 1, "armor": 3 },
+  "iron_boots": { "name": "Iron Boots", "type": "feet", "icon": "👢", "levelReq": 5, "armor": 7 },
+
+  "band": { "name": "Band", "type": "ring", "icon": "💍", "levelReq": 1 },
+  "pendant": { "name": "Pendant", "type": "amulet", "icon": "📿", "levelReq": 1 }
+}

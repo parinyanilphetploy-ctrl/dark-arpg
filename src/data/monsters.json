@@ -1,0 +1,38 @@
+{
+  "ghoul": {
+    "name": "Ghoul",
+    "hp": 45,
+    "damage": [3, 5],
+    "speed": 3.4,
+    "attackRange": 1.3,
+    "attackCooldown": 1.7,
+    "attackAnimSpeed": 1.2,
+    "aggroRange": 10,
+    "xp": 10,
+    "height": 1.5,
+    "tint": "#a04a3c",
+    "stagger": true,
+    "moveClip": "Running",
+    "dropChance": 0.35,
+    "goldChance": 0.5,
+    "rarityBoost": 1
+  },
+  "brute": {
+    "name": "Brute",
+    "hp": 140,
+    "damage": [8, 13],
+    "speed": 2.3,
+    "attackRange": 1.7,
+    "attackCooldown": 2.4,
+    "attackAnimSpeed": 0.8,
+    "aggroRange": 9,
+    "xp": 35,
+    "height": 2.4,
+    "tint": "#5e7046",
+    "stagger": false,
+    "moveClip": "Walking",
+    "dropChance": 0.9,
+    "goldChance": 1,
+    "rarityBoost": 2.5
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "warrior": {
+    "name": "Warrior",
+    "description": "Greatsword. Slow, wide, heavy cleaves and the most life.",
+    "model": "models/characters/warrior.glb",
+    "height": 1.85,
+    "tint": "#a33a32",
+    "clips": { "idle": "Idle", "run": "Running", "attack": "Punch", "death": "Death" },
+    "attack": { "kind": "melee", "range": 2.2, "arc": 170, "animSpeed": 1.3, "hitAt": 0.45 },
+    "baseHp": 120,
+    "damageMult": 1.25,
+    "moveSpeed": 1.0
+  },
+  "dualblade": {
+    "name": "Dual Blade",
+    "description": "Twin curved blades. Fast, narrow strikes and quick feet.",
+    "model": "models/characters/dualblade.glb",
+    "height": 1.8,
+    "tint": "#8c3a44",
+    "clips": { "idle": "Idle", "run": "Running", "attack": "Punch", "death": "Death" },
+    "attack": { "kind": "melee", "range": 1.7, "arc": 110, "animSpeed": 2.2, "hitAt": 0.4 },
+    "baseHp": 95,
+    "damageMult": 0.8,
+    "moveSpeed": 1.12
+  },
+  "mage": {
+    "name": "Mage",
+    "description": "Blood magic. Hurls exploding orbs that hit everything nearby.",
+    "model": "models/characters/mage.glb",
+    "height": 1.75,
+    "tint": "#c0203a",
+    "clips": { "idle": "Idle", "run": "Running", "attack": "Punch", "death": "Death" },
+    "attack": {
+      "kind": "projectile", "range": 11, "animSpeed": 1.4, "hitAt": 0.4,
+      "projectile": { "speed": 14, "radius": 0.35, "color": "#ff3040", "size": 0.3, "explode": 2.2 }
+    },
+    "baseHp": 85,
+    "damageMult": 1.0,
+    "moveSpeed": 1.0
+  },
+  "archer": {
+    "name": "Archer",
+    "description": "Longbow. Long-range arrows that pierce through enemies.",
+    "model": "models/characters/archer.glb",
+    "height": 1.75,
+    "tint": "#7a5a3a",
+    "clips": { "idle": "Idle", "run": "Running", "attack": "Punch", "death": "Death" },
+    "attack": {
+      "kind": "projectile", "range": 14, "animSpeed": 1.8, "hitAt": 0.35,
+      "projectile": { "speed": 24, "radius": 0.3, "color": "#ffb060", "size": 0.12, "pierce": 2 }
+    },
+    "baseHp": 90,
+    "damageMult": 0.9,
+    "moveSpeed": 1.05
+  }
+}

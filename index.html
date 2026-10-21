@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0b0907" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>Dark ARPG</title>
+    <link rel="stylesheet" href="/src/ui/style.css" />
+  </head>
+  <body>
+    <canvas id="game"></canvas>
+    <div id="vignette"></div>
+    <div id="hud">
+      <div id="labels"></div>
+      <div id="player-hp"><div class="fill"></div><span class="text"></span></div>
+      <div id="player-xp"><div class="fill"></div></div>
+      <div id="hud-info"></div>
+      <button id="bag-btn" aria-label="Inventory">🎒</button>
+      <button id="sound-btn" aria-label="Sound">🔊</button>
+      <div id="banner"></div>
+      <div id="debug"></div>
+    </div>
+    <div id="inventory"></div>
+    <div id="fade"></div>
+    <div id="loading">Loading…</div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

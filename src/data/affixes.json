@@ -1,0 +1,72 @@
+{
+  "damage_flat": {
+    "text": "+{v} Damage",
+    "stat": "damageFlat",
+    "min": 1, "max": 3, "perLevel": 0.6,
+    "types": ["mainhand", "hands", "ring", "amulet"],
+    "prefix": "Sharp"
+  },
+  "damage_pct": {
+    "text": "+{v}% Damage",
+    "stat": "damagePct",
+    "min": 5, "max": 10, "perLevel": 0.8,
+    "types": ["mainhand", "amulet"],
+    "prefix": "Cruel"
+  },
+  "max_hp": {
+    "text": "+{v} Life",
+    "stat": "maxHp",
+    "min": 5, "max": 12, "perLevel": 2,
+    "types": ["offhand", "head", "chest", "hands", "legs", "feet", "ring", "amulet"],
+    "suffix": "of the Bear"
+  },
+  "armor": {
+    "text": "+{v} Armor",
+    "stat": "armor",
+    "min": 2, "max": 5, "perLevel": 0.8,
+    "types": ["offhand", "head", "chest", "hands", "legs", "feet"],
+    "prefix": "Sturdy"
+  },
+  "crit": {
+    "text": "+{v}% Critical Chance",
+    "stat": "critChance",
+    "min": 1, "max": 3, "perLevel": 0.15,
+    "types": ["mainhand", "head", "hands", "ring", "amulet"],
+    "suffix": "of Precision"
+  },
+  "attack_speed": {
+    "text": "+{v}% Attack Speed",
+    "stat": "attackSpeed",
+    "min": 3, "max": 7, "perLevel": 0.25,
+    "types": ["mainhand", "hands", "ring"],
+    "suffix": "of Haste"
+  },
+  "move_speed": {
+    "text": "+{v}% Movement Speed",
+    "stat": "moveSpeed",
+    "min": 3, "max": 8, "perLevel": 0.2,
+    "types": ["feet"],
+    "suffix": "of the Wind"
+  },
+  "life_on_hit": {
+    "text": "+{v} Life per Hit",
+    "stat": "lifeOnHit",
+    "min": 1, "max": 2, "perLevel": 0.2,
+    "types": ["mainhand", "ring", "amulet"],
+    "prefix": "Vampiric"
+  },
+  "life_regen": {
+    "text": "+{v} Life per Second",
+    "stat": "lifeRegen",
+    "min": 1, "max": 2, "perLevel": 0.25,
+    "types": ["offhand", "head", "chest", "legs", "feet", "ring", "amulet"],
+    "suffix": "of Renewal"
+  },
+  "thorns": {
+    "text": "+{v} Thorns",
+    "stat": "thorns",
+    "min": 2, "max": 5, "perLevel": 1,
+    "types": ["offhand", "chest", "legs"],
+    "prefix": "Barbed"
+  }
+}
